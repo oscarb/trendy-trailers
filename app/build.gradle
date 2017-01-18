@@ -1,5 +1,16 @@
 apply plugin: 'com.android.application'
 
+Properties properties = new Properties()
+File propertiesFile = file('secrets.properties')
+if (propertiesFile.exists()) {
+    properties.load(propertiesFile.newDataInputStream())
+} else if (System.env.TMDB_API_KEY != null) {
+    properties.setProperty("apiKey", System.env.TMDB_API_KEY)
+} else {
+    throw new GradleException("File missing in app folder: secrets.properties")
+}
+
+
 android {
     compileSdkVersion 25
     buildToolsVersion "24.0.2"
@@ -10,6 +21,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "TMDB_API_KEY", "\"${properties.getProperty("apiKey")}\""
     }
     buildTypes {
         release {

@@ -1,7 +1,5 @@
 package se.oscarb.trendytrailers.model;
 
-import android.graphics.Movie;
-
 import java.util.List;
 
 public class MovieListing {

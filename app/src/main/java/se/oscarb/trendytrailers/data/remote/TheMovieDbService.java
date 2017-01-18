@@ -11,6 +11,5 @@ import se.oscarb.trendytrailers.model.MovieListing;
 public interface TheMovieDbService {
 
     @GET("discover/movie")
-    Call<MovieListing> discoverMovies(@Query("api_key") String apiKey,
-                                      @Query("sort_by") String sortBy);
+    Call<MovieListing> discoverMovies(@Query("sort_by") String sortBy);
 }

@@ -9,6 +9,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+import se.oscarb.trendytrailers.BuildConfig;
 
 public class TheMovieDbServiceGenerator {
 
@@ -24,7 +25,7 @@ public class TheMovieDbServiceGenerator {
             Request original = chain.request();
 
             HttpUrl newUrl = original.url().newBuilder()
-                    .addQueryParameter("api_key", "SECRET API KEY")
+                    .addQueryParameter("api_key", BuildConfig.TMDB_API_KEY)
                     .build();
 
             Request.Builder requestBuilder = original.newBuilder().url(newUrl);

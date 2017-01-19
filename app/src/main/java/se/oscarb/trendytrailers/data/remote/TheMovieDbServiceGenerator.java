@@ -13,7 +13,7 @@ import se.oscarb.trendytrailers.BuildConfig;
 
 public class TheMovieDbServiceGenerator {
 
-    public static final String API_BASE_URL = "https://api.themoviedb.org/3/";
+    public static final String API_BASE_URL = "https://api.themoviedb.org/4/";
     public static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
 
     /**

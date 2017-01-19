@@ -58,8 +58,11 @@ public class MoviePostersAdapter extends RecyclerView.Adapter<MoviePostersAdapte
         }
 
         private void bindMovie(Movie movie) {
-
+            if (binding.getPosterViewModel() == null) {
+                binding.setPosterViewModel(new ItemPosterViewModel(itemView.getContext(), movie));
+            } else {
+                binding.getPosterViewModel().setMovie(movie);
+            }
         }
-
     }
 }

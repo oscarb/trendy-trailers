@@ -21,6 +21,14 @@ public class MoviePostersAdapter extends RecyclerView.Adapter<MoviePostersAdapte
         this.movies = movies;
     }
 
+    public List<Movie> getMovieList() {
+        return movies;
+    }
+
+    public void setMovieList(List<Movie> movies) {
+        this.movies = movies;
+    }
+
     @Override
     public MoviePostersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return null;

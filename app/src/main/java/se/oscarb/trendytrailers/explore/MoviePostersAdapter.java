@@ -4,8 +4,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Collections;
+import java.util.List;
+
+import se.oscarb.trendytrailers.model.Movie;
+
 public class MoviePostersAdapter extends RecyclerView.Adapter<MoviePostersAdapter.ViewHolder> {
 
+    private List<Movie> movies;
+
+    public MoviePostersAdapter() {
+        movies = Collections.emptyList();
+    }
+
+    public MoviePostersAdapter(List<Movie> movies) {
+        this.movies = movies;
+    }
 
     @Override
     public MoviePostersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

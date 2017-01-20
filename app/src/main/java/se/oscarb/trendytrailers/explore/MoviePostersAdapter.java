@@ -14,22 +14,22 @@ import se.oscarb.trendytrailers.model.Movie;
 
 public class MoviePostersAdapter extends RecyclerView.Adapter<MoviePostersAdapter.ViewHolder> {
 
-    private List<Movie> movies;
+    private List<Movie> movieList;
 
     public MoviePostersAdapter() {
-        movies = Collections.emptyList();
+        movieList = Collections.emptyList();
     }
 
-    public MoviePostersAdapter(List<Movie> movies) {
-        this.movies = movies;
+    public MoviePostersAdapter(List<Movie> movieList) {
+        this.movieList = movieList;
     }
 
     public List<Movie> getMovieList() {
-        return movies;
+        return movieList;
     }
 
-    public void setMovieList(List<Movie> movies) {
-        this.movies = movies;
+    public void setMovieList(List<Movie> movieList) {
+        this.movieList = movieList;
     }
 
     @Override
@@ -40,12 +40,12 @@ public class MoviePostersAdapter extends RecyclerView.Adapter<MoviePostersAdapte
 
     @Override
     public void onBindViewHolder(MoviePostersAdapter.ViewHolder holder, int position) {
-        holder.bindMovie(movies.get(position));
+        holder.bindMovie(movieList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        return movieList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

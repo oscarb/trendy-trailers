@@ -16,6 +16,10 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
         this.movie = movie;
     }
 
+    public String getTestText() {
+        return "foo bar";
+    }
+
     @Override
     public void destroy() {
 

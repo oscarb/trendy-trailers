@@ -8,12 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import se.oscarb.trendytrailers.R;
+import se.oscarb.trendytrailers.data.remote.TheMovieDbService;
+import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.databinding.ActivityMainBinding;
+import se.oscarb.trendytrailers.model.MovieListing;
 
 public class ExploreActivity extends AppCompatActivity {
 
@@ -41,6 +49,8 @@ public class ExploreActivity extends AppCompatActivity {
         // Setup RecyclerView
         setupRecyclerView(binding.moviePosters);
 
+        loadMoviesFromApi();
+
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -52,6 +62,36 @@ public class ExploreActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
     }
+
+    private void loadMoviesFromApi() {
+        // Test retrofit
+        TheMovieDbService service = TheMovieDbServiceGenerator.getService();
+
+        Call<MovieListing> call = service.discoverMovies("popularity.desc");
+
+        call.enqueue(new Callback<MovieListing>() {
+            @Override
+            public void onResponse(Call<MovieListing> call, Response<MovieListing> response) {
+                MovieListing movieListing = response.body();
+
+                MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
+                moviePostersAdapter.setMovieList(movieListing.getMovies());
+                moviePostersAdapter.notifyDataSetChanged();
+
+                Toast.makeText(ExploreActivity.this, "Data loaded" +
+                        "", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieListing> call, Throwable t) {
+                Log.d("tag", "failure");
+            }
+        });
+
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

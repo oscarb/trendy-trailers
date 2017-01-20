@@ -8,7 +8,7 @@ public class Movie {
     private int id;
     private String title;
     private String backdrop_path;
-    private int vote_average;
+    private float vote_average;
 
 
     public boolean isAdultMovie() {
@@ -39,7 +39,7 @@ public class Movie {
         return title;
     }
 
-    public int getVoteAverage() {
+    public float getVoteAverage() {
         return vote_average;
     }
 }

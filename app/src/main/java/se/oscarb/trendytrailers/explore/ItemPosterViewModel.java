@@ -3,7 +3,9 @@ package se.oscarb.trendytrailers.explore;
 import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -26,7 +28,6 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
     public static void setImageUrl(ImageView imageView, String url) {
         Glide.with(imageView.getContext())
                 .load(url)
-                //.centerCrop()
                 .into(imageView);
     }
 
@@ -36,6 +37,10 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
 
     public String getTitle() {
         return movie.getTitle();
+    }
+
+    public void onPosterClick(View view) {
+        Toast.makeText(view.getContext(), "" + movie.getId(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

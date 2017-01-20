@@ -18,7 +18,10 @@
             android:id="@+id/poster"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:imageUrl="@{posterViewModel.imageUrl}" />
+            android:onClick="@{posterViewModel.onPosterClick}"
+            app:imageUrl="@{posterViewModel.imageUrl}"
+
+            />
 
         <TextView
             android:id="@+id/test"

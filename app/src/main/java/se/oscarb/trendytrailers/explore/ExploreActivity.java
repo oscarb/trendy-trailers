@@ -63,11 +63,21 @@ public class ExploreActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
     }
 
+    /**
+     * Get and show movie posters from the API sorted by popularity by default
+     */
     private void loadMoviesFromApi() {
+        loadMoviesFromApi(TheMovieDbService.SORT_POPULARITY);
+    }
+
+    /**
+     * Get and show movie posters from the API sorted by sortOrder
+     */
+    private void loadMoviesFromApi(final String sortOrder) {
         // Test retrofit
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
 
-        Call<MovieListing> call = service.discoverMovies("popularity.desc");
+        Call<MovieListing> call = service.discoverMovies(sortOrder);
 
         call.enqueue(new Callback<MovieListing>() {
             @Override
@@ -81,6 +91,8 @@ public class ExploreActivity extends AppCompatActivity {
                 Toast.makeText(ExploreActivity.this, "Data loaded" +
                         "", Toast.LENGTH_SHORT).show();
 
+                setCheckedSortOrder(sortOrder);
+
             }
 
             @Override
@@ -88,17 +100,34 @@ public class ExploreActivity extends AppCompatActivity {
                 Log.d("tag", "failure");
             }
         });
-
-
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_explore, menu);
         return true;
     }
+
+    private void setCheckedSortOrder(String sortOrder) {
+        int menuItemId = 0;
+
+        switch (sortOrder) {
+            case TheMovieDbService.SORT_HIGHEST_RATED:
+                menuItemId = R.id.action_sort_vote_average_desc;
+                break;
+            case TheMovieDbService.SORT_POPULARITY:
+                menuItemId = R.id.action_sort_popularity_desc;
+                break;
+        }
+        if (menuItemId != 0) {
+            binding.toolbar.getMenu().findItem(menuItemId).setChecked(true);
+        }
+    }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -107,12 +136,22 @@ public class ExploreActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_sort) {
-            Toast.makeText(this, "Sort by", Toast.LENGTH_SHORT).show();
-            return true;
+        String sort = null;
+
+
+        switch (id) {
+            case R.id.action_sort_popularity_desc:
+                sort = TheMovieDbService.SORT_POPULARITY;
+            case R.id.action_sort_vote_average_desc:
+                if (sort == null) sort = TheMovieDbService.SORT_HIGHEST_RATED;
+                // Actions for both sort options
+                if (item.isChecked()) return true;
+                loadMoviesFromApi(sort);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

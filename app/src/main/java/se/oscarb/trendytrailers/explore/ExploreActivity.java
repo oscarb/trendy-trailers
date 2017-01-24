@@ -18,18 +18,18 @@ import retrofit2.Response;
 import se.oscarb.trendytrailers.R;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbService;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
-import se.oscarb.trendytrailers.databinding.ActivityMainBinding;
+import se.oscarb.trendytrailers.databinding.ActivityExploreBinding;
 import se.oscarb.trendytrailers.model.MovieListing;
 
 public class ExploreActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
+    private ActivityExploreBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_explore);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

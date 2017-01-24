@@ -17,6 +17,8 @@ import se.oscarb.trendytrailers.model.ViewModel;
 
 public class ItemPosterViewModel extends BaseObservable implements ViewModel {
 
+    public final static String EXTRA_MOVIE_TMDB_ID = "se.oscarb.trendytrailers.TMDB_ID";
+
     private Context context;
     private Movie movie;
 
@@ -45,6 +47,7 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
         Toast.makeText(view.getContext(), "" + movie.getId(), Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(view.getContext(), DetailActivity.class);
+        intent.putExtra(EXTRA_MOVIE_TMDB_ID, movie.getId());
         view.getContext().startActivity(intent);
     }
 

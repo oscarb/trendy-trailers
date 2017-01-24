@@ -7,7 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
+import se.oscarb.trendytrailers.model.Movie;
 import se.oscarb.trendytrailers.model.MovieListing;
 
 import static se.oscarb.trendytrailers.data.remote.TheMovieDbService.SortBy.HIGHEST_RATED;
@@ -23,6 +25,9 @@ public interface TheMovieDbService {
 
     @GET("discover/movie")
     Call<MovieListing> discoverMovies(@Query("sort_by") @SortBy String sortBy);
+
+    @GET("movie/{movie_id}")
+    Call<Movie> getMovie(@Path("movie_id") int movieId);
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({

@@ -6,6 +6,7 @@ public class Movie {
     private String overview;
     private String release_date;
     private int id;
+    private String original_title;
     private String title;
     private String backdrop_path;
     private float vote_average;
@@ -41,5 +42,9 @@ public class Movie {
 
     public float getVoteAverage() {
         return vote_average;
+    }
+
+    public String getOriginalTitle() {
+        return original_title;
     }
 }

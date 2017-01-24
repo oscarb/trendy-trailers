@@ -1,6 +1,7 @@
 package se.oscarb.trendytrailers.explore;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
+import se.oscarb.trendytrailers.detail.DetailActivity;
 import se.oscarb.trendytrailers.model.Movie;
 import se.oscarb.trendytrailers.model.ViewModel;
 
@@ -41,6 +43,9 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
 
     public void onPosterClick(View view) {
         Toast.makeText(view.getContext(), "" + movie.getId(), Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(view.getContext(), DetailActivity.class);
+        view.getContext().startActivity(intent);
     }
 
     @Override

@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,7 +65,7 @@ public class ExploreActivity extends AppCompatActivity {
      * Get and show movie posters from the API sorted by popularity by default
      */
     private void loadMoviesFromApi() {
-        loadMoviesFromApi(TheMovieDbService.SORT_POPULARITY);
+        loadMoviesFromApi(TheMovieDbService.SortBy.POPULARITY);
     }
 
     /**
@@ -86,6 +85,11 @@ public class ExploreActivity extends AppCompatActivity {
                 // Hide progress
                 binding.progressBar.setVisibility(View.GONE);
 
+                if (!response.isSuccessful()) {
+                    Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
                 MovieListing movieListing = response.body();
 
                 MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
@@ -95,11 +99,13 @@ public class ExploreActivity extends AppCompatActivity {
                 setCheckedSortOrder(sortOrder);
 
 
+
             }
 
             @Override
             public void onFailure(Call<MovieListing> call, Throwable t) {
-                Log.d("tag", "failure");
+                binding.progressBar.setVisibility(View.GONE);
+                Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -116,10 +122,10 @@ public class ExploreActivity extends AppCompatActivity {
         int menuItemId = 0;
 
         switch (sortOrder) {
-            case TheMovieDbService.SORT_HIGHEST_RATED:
+            case TheMovieDbService.SortBy.HIGHEST_RATED:
                 menuItemId = R.id.action_sort_vote_average_desc;
                 break;
-            case TheMovieDbService.SORT_POPULARITY:
+            case TheMovieDbService.SortBy.POPULARITY:
                 menuItemId = R.id.action_sort_popularity_desc;
                 break;
         }
@@ -143,9 +149,9 @@ public class ExploreActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_sort_popularity_desc:
-                sort = TheMovieDbService.SORT_POPULARITY;
+                sort = TheMovieDbService.SortBy.POPULARITY;
             case R.id.action_sort_vote_average_desc:
-                if (sort == null) sort = TheMovieDbService.SORT_HIGHEST_RATED;
+                if (sort == null) sort = TheMovieDbService.SortBy.HIGHEST_RATED;
                 // Actions for both sort options
                 if (item.isChecked()) return true;
                 loadMoviesFromApi(sort);

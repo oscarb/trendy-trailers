@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,6 +74,8 @@ public class ExploreActivity extends AppCompatActivity {
      */
     private void loadMoviesFromApi(final String sortOrder) {
         // Test retrofit
+        binding.progressBar.setVisibility(View.VISIBLE);
+
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
 
         Call<MovieListing> call = service.discoverMovies(sortOrder);
@@ -82,16 +83,17 @@ public class ExploreActivity extends AppCompatActivity {
         call.enqueue(new Callback<MovieListing>() {
             @Override
             public void onResponse(Call<MovieListing> call, Response<MovieListing> response) {
+                // Hide progress
+                binding.progressBar.setVisibility(View.GONE);
+
                 MovieListing movieListing = response.body();
 
                 MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
                 moviePostersAdapter.setMovieList(movieListing.getMovies());
                 moviePostersAdapter.notifyDataSetChanged();
 
-                Toast.makeText(ExploreActivity.this, "Data loaded" +
-                        "", Toast.LENGTH_SHORT).show();
-
                 setCheckedSortOrder(sortOrder);
+
 
             }
 

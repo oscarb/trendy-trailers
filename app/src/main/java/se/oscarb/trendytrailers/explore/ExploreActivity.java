@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +60,8 @@ public class ExploreActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
+
+        //recyclerView.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -97,6 +100,11 @@ public class ExploreActivity extends AppCompatActivity {
                 moviePostersAdapter.notifyDataSetChanged();
 
                 setCheckedSortOrder(sortOrder);
+
+                AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
+                anim.setDuration(1000);
+                anim.setRepeatCount(0);
+                binding.moviePosters.startAnimation(anim);
 
 
 

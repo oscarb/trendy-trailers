@@ -44,6 +44,7 @@
                 android:id="@+id/movie_poster"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                app:imageUrl="@{detailViewModel.posterUrl}"
                 tools:background="@color/colorAccent"
                 tools:layout_height="200dp" />
 
@@ -52,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:text="@{detailViewModel.releaseDate}"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 tools:text="2017-12-15" />
 
@@ -66,14 +68,21 @@
 
             <RatingBar
                 android:id="@+id/movie_rating"
+                style="?attr/ratingBarStyleIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:rating="4.3" />
+                android:isIndicator="true"
+                android:max="5"
+                android:numStars="5"
+                android:rating="@{detailViewModel.rating}"
+                android:stepSize="0.5" />
 
             <TextView
                 android:id="@+id/movie_plot_synopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@{detailViewModel.plotSynopsis}"
+                android:textSize="14sp"
                 tools:text="@string/lorem_ipsum" />
 
 

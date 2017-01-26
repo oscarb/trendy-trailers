@@ -1,5 +1,8 @@
 package se.oscarb.trendytrailers.model;
 
+/**
+ * A Movie with properties as defined by The Movie Database
+ */
 public class Movie {
     private String poster_path;
     private boolean adult;

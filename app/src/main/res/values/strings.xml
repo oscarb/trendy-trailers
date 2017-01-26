@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="lorem_ipsum">Having taken her first steps into a larger world in Star Wars: Episode VII - The Force Awakens (2015), Rey continues her epic journey with Finn, Poe and Luke Skywalker in the next chapter of the saga.</string>
+    <string name="loading_movie">Loading movie...</string>
+    <string name="error">Error</string>
 </resources>

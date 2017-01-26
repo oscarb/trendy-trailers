@@ -6,7 +6,6 @@ import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -15,6 +14,9 @@ import se.oscarb.trendytrailers.detail.DetailActivity;
 import se.oscarb.trendytrailers.model.Movie;
 import se.oscarb.trendytrailers.model.ViewModel;
 
+/**
+ * View-Model for each item in the RecyclerView, ie each movie poster
+ */
 public class ItemPosterViewModel extends BaseObservable implements ViewModel {
 
     public final static String EXTRA_MOVIE_TMDB_ID = "se.oscarb.trendytrailers.TMDB_ID";
@@ -43,9 +45,8 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
         return movie.getTitle();
     }
 
+    /** Show detailed information about the movie when the poster image is clicked */
     public void onPosterClick(View view) {
-        Toast.makeText(view.getContext(), "" + movie.getId(), Toast.LENGTH_SHORT).show();
-
         Intent intent = new Intent(view.getContext(), DetailActivity.class);
         intent.putExtra(EXTRA_MOVIE_TMDB_ID, movie.getId());
         view.getContext().startActivity(intent);

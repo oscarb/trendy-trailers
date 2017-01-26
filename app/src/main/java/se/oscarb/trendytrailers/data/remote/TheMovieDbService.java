@@ -20,15 +20,13 @@ import static se.oscarb.trendytrailers.data.remote.TheMovieDbService.SortBy.POPU
  */
 public interface TheMovieDbService {
 
-
-    /* Magic Constants */
-
     @GET("discover/movie")
     Call<MovieListing> discoverMovies(@Query("sort_by") @SortBy String sortBy);
 
     @GET("movie/{movie_id}")
     Call<Movie> getMovie(@Path("movie_id") int movieId);
 
+    /* Magic Constants */
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
             POPULARITY,

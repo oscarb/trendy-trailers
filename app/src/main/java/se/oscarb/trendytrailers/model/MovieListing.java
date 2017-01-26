@@ -2,6 +2,9 @@ package se.oscarb.trendytrailers.model;
 
 import java.util.List;
 
+/**
+ * Meta-data about a search, such as number of results, the results and pages
+ */
 public class MovieListing {
     private int page;
     private List<Movie> results;

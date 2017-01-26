@@ -35,7 +35,7 @@ public class ExploreActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*
+        /* Hide FAB for now, might come in handy later...
         FloatingActionButton fab = (FloatingActionButton) findViewById(fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +53,9 @@ public class ExploreActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Configure RecyclerView with adapter and layout
+     */
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
 
@@ -61,8 +64,6 @@ public class ExploreActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-
-        //recyclerView.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -76,7 +77,6 @@ public class ExploreActivity extends AppCompatActivity {
      * Get and show movie posters from the API sorted by sortOrder
      */
     private void loadMoviesFromApi(final String sortOrder) {
-        // Test retrofit
         binding.progressBar.setVisibility(View.VISIBLE);
 
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
@@ -84,6 +84,7 @@ public class ExploreActivity extends AppCompatActivity {
         Call<MovieListing> call = service.discoverMovies(sortOrder);
 
         call.enqueue(new Callback<MovieListing>() {
+            /** Populate RecyclerView with API data and fade it into view */
             @Override
             public void onResponse(Call<MovieListing> call, Response<MovieListing> response) {
                 // Hide progress
@@ -107,14 +108,13 @@ public class ExploreActivity extends AppCompatActivity {
                 anim.setRepeatCount(0);
                 binding.moviePosters.startAnimation(anim);
 
-
-
             }
 
+            /** Display message to user that data could not load */
             @Override
             public void onFailure(Call<MovieListing> call, Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);
-                Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(binding.getRoot(), R.string.error, Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -127,6 +127,7 @@ public class ExploreActivity extends AppCompatActivity {
         return true;
     }
 
+    /** Update menu to reflect current sortOrder */
     private void setCheckedSortOrder(String sortOrder) {
         int menuItemId = 0;
 
@@ -143,9 +144,6 @@ public class ExploreActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -155,7 +153,7 @@ public class ExploreActivity extends AppCompatActivity {
 
         String sort = null;
 
-
+        // Since both sort options execute the same code, the break can be omitted for the first case
         switch (id) {
             case R.id.action_sort_popularity_desc:
                 sort = TheMovieDbService.SortBy.POPULARITY;
@@ -169,6 +167,4 @@ public class ExploreActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }

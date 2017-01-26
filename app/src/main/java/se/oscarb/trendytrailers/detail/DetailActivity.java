@@ -25,19 +25,19 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
         setSupportActionBar(binding.toolbar);
 
+        /** Get movie ID from ExploreActivity */
         int movieId = getIntent().getIntExtra(ItemPosterViewModel.EXTRA_MOVIE_TMDB_ID, -1);
 
         if (movieId == -1) return;
 
-        setTitle("Loading movie...");
+        setTitle(getString(R.string.loading_movie));
         searchApiForMovie(movieId);
 
-        /*
+        /* Hide FAB for now, might make use of it later...
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,15 +47,19 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         */
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * Initiate a search for movie with id movieId to the THMDB API
+     */
     private void searchApiForMovie(int movieId) {
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
-
         Call<Movie> call = service.getMovie(movieId);
 
         call.enqueue(new Callback<Movie>() {
+            /** Show detailed information for the movie when request is successful */
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 binding.progressBar.setVisibility(View.GONE);
@@ -71,17 +75,19 @@ public class DetailActivity extends AppCompatActivity {
                 bindMovie(movie);
             }
 
+            /** Show information to the user that data failed to load */
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);
-                setTitle("Trendy Trailers");
-                Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
+                setTitle(R.string.app_name);
+                Snackbar.make(binding.getRoot(), R.string.error, Snackbar.LENGTH_LONG).show();
             }
         });
 
 
     }
 
+    /** Bind movie with the View-Model for showing it in the UI */
     private void bindMovie(Movie movie) {
 
         DetailViewModel detailViewModel = new DetailViewModel(movie);

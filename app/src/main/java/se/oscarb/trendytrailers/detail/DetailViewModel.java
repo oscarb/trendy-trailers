@@ -9,13 +9,14 @@ import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.model.Movie;
 import se.oscarb.trendytrailers.model.ViewModel;
 
-
+/**
+ * View-Model for detailed movie information
+ */
 public class DetailViewModel implements ViewModel {
 
     private Movie movie;
 
     public DetailViewModel() {
-        // movie = new Movie();
     }
 
     public DetailViewModel(Movie movie) {
@@ -48,7 +49,6 @@ public class DetailViewModel implements ViewModel {
     public String getPlotSynopsis() {
         return movie.getOverview();
     }
-
 
     public void setMovie(Movie movie) {
         this.movie = movie;

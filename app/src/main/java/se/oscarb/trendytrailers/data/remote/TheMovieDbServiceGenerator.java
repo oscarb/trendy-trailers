@@ -11,6 +11,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 import se.oscarb.trendytrailers.BuildConfig;
 
+/**
+ * Generate and provide a static service for API requests to The Movie Database
+ */
 public class TheMovieDbServiceGenerator {
 
     public static final String API_BASE_URL = "https://api.themoviedb.org/3/";

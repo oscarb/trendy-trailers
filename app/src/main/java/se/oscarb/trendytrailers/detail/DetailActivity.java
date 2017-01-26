@@ -74,6 +74,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);
+                setTitle("Trendy Trailers");
                 Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
             }
         });

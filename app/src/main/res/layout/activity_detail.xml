@@ -93,6 +93,7 @@
                     android:lineSpacingMultiplier="1.4"
                     android:maxWidth="340sp"
                     android:text="@{detailViewModel.plotSynopsis}"
+                    android:textColor="@color/primaryText"
                     android:textSize="14sp"
                     tools:text="@string/lorem_ipsum" />
 

@@ -2,7 +2,6 @@ package se.oscarb.trendytrailers.detail;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -31,23 +30,14 @@ public class DetailActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        // TODO: Get movie id from intent
         int movieId = getIntent().getIntExtra(ItemPosterViewModel.EXTRA_MOVIE_TMDB_ID, -1);
 
         if (movieId == -1) return;
 
+        setTitle("Loading movie...");
         searchApiForMovie(movieId);
 
-        // TODO: Get movie from API
-        // TODO: Bind movie with viewmodel
-
-
-
-
-
-
-
-
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +46,7 @@ public class DetailActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        */
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -67,14 +58,23 @@ public class DetailActivity extends AppCompatActivity {
         call.enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
+                binding.progressBar.setVisibility(View.GONE);
+
+                if (!response.isSuccessful()) {
+                    Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
                 Movie movie = response.body();
+                setTitle(movie.getTitle());
 
                 bindMovie(movie);
             }
 
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
-
+                binding.progressBar.setVisibility(View.GONE);
+                Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
             }
         });
 

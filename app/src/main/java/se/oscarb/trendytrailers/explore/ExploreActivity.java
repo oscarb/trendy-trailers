@@ -2,7 +2,6 @@ package se.oscarb.trendytrailers.explore;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -36,7 +35,8 @@ public class ExploreActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*
+        FloatingActionButton fab = (FloatingActionButton) findViewById(fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +44,7 @@ public class ExploreActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        */
 
         // Setup RecyclerView
         setupRecyclerView(binding.moviePosters);

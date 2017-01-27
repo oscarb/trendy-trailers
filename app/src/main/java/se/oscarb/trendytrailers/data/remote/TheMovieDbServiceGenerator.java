@@ -22,7 +22,7 @@ public class TheMovieDbServiceGenerator {
     /**
      * Add API_KEY to all requests
      */
-    private static OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+    private static final OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request original = chain.request();
@@ -37,14 +37,11 @@ public class TheMovieDbServiceGenerator {
             return chain.proceed(newRequest);
         }
     }).build();
-
-
-    private static TheMovieDbService service;
-
-    private static Retrofit.Builder builder = new Retrofit.Builder()
+    private static final Retrofit.Builder builder = new Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(API_BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create());
+    private static TheMovieDbService service;
 
     public static TheMovieDbService getService() {
         if (service == null) {

@@ -12,7 +12,7 @@
     <item
         android:id="@+id/action_sort"
         android:icon="@drawable/ic_sort_24dp"
-        android:title="Sort by"
+        android:title="@string/sort_by"
         app:showAsAction="always">
         <menu>
             <group
@@ -21,13 +21,13 @@
                 <item
                     android:id="@+id/action_sort_popularity_desc"
                     android:orderInCategory="100"
-                    android:title="Most popular"
+                    android:title="@string/most_popular"
 
                     />
                 <item
                     android:id="@+id/action_sort_vote_average_desc"
                     android:orderInCategory="200"
-                    android:title="Highest rated" />
+                    android:title="@string/highest_rated" />
             </group>
         </menu>
     </item>

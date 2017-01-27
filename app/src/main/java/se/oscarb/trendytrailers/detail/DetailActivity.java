@@ -18,7 +18,7 @@ import se.oscarb.trendytrailers.model.Movie;
 
 public class DetailActivity extends AppCompatActivity {
 
-    ActivityDetailBinding binding;
+    private ActivityDetailBinding binding;
 
 
     @Override
@@ -52,7 +52,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     /**
-     * Initiate a search for movie with id movieId to the THMDB API
+     * Initiate a search for movie with id movieId to the TMDb API
      */
     private void searchApiForMovie(int movieId) {
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();

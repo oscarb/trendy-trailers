@@ -37,17 +37,6 @@ public class DetailActivity extends AppCompatActivity {
         setTitle(getString(R.string.loading_movie));
         searchApiForMovie(movieId);
 
-        /* Hide FAB for now, might make use of it later...
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

@@ -21,10 +21,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster"
             android:onClick="@{posterViewModel.onPosterClick}"
-            app:imageUrl="@{posterViewModel.imageUrl}"
-
-
-            />
+            app:imageUrl="@{posterViewModel.imageUrl}" />
     </FrameLayout>
 
 </layout>

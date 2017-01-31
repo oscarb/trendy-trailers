@@ -35,17 +35,6 @@ public class ExploreActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /* Hide FAB for now, might come in handy later...
-        FloatingActionButton fab = (FloatingActionButton) findViewById(fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
-
         // Setup RecyclerView
         setupRecyclerView(binding.moviePosters);
 

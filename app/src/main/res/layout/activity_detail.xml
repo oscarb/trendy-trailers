@@ -46,7 +46,7 @@
 
                 <ImageView
                     android:id="@+id/movie_poster"
-                    android:layout_width="150dp"
+                    android:layout_width="@dimen/movie_poster_width"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:contentDescription="@string/movie_poster"
@@ -92,10 +92,10 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:lineSpacingMultiplier="1.4"
-                    android:maxWidth="340sp"
+                    android:maxWidth="@dimen/plot_synopsis_width"
                     android:text="@{detailViewModel.plotSynopsis}"
                     android:textColor="@color/primaryText"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_body"
                     tools:text="@string/lorem_ipsum" />
 
 

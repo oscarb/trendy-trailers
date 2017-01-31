@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import se.oscarb.trendytrailers.R;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.detail.DetailActivity;
 import se.oscarb.trendytrailers.model.Movie;
@@ -34,6 +36,9 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
     public static void setImageUrl(ImageView imageView, String url) {
         Glide.with(imageView.getContext())
                 .load(url)
+                .placeholder(R.drawable.ic_movie_black_24dp)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .dontAnimate()
                 .into(imageView);
     }
 

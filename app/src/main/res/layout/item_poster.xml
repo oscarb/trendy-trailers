@@ -23,6 +23,7 @@
             android:onClick="@{posterViewModel.onPosterClick}"
             app:imageUrl="@{posterViewModel.imageUrl}"
 
+
             />
     </FrameLayout>
 

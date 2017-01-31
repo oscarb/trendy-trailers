@@ -81,7 +81,19 @@ public class ExploreActivity extends AppCompatActivity {
 
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
 
-        Call<MovieListing> call = service.discoverMovies(sortOrder);
+
+        Call<MovieListing> call;
+        switch (sortOrder) {
+            case TheMovieDbService.SortBy.POPULARITY:
+                call = service.getPopularMovies();
+                break;
+            case TheMovieDbService.SortBy.HIGHEST_RATED:
+                call = service.getTopRatedMovies();
+                break;
+            default:
+                call = service.getPopularMovies();
+                break;
+        }
 
         call.enqueue(new Callback<MovieListing>() {
             /** Populate RecyclerView with API data and fade it into view */

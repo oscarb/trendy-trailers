@@ -23,6 +23,12 @@ public interface TheMovieDbService {
     @GET("discover/movie")
     Call<MovieListing> discoverMovies(@Query("sort_by") @SortBy String sortBy);
 
+    @GET("movie/popular")
+    Call<MovieListing> getPopularMovies();
+
+    @GET("movie/top_rated")
+    Call<MovieListing> getTopRatedMovies();
+
     @GET("movie/{movie_id}")
     Call<Movie> getMovie(@Path("movie_id") int movieId);
 

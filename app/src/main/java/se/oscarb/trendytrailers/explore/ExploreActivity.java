@@ -101,6 +101,7 @@ public class ExploreActivity extends AppCompatActivity {
                 MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
                 moviePostersAdapter.setMovieList(movieListing.getMovies());
                 moviePostersAdapter.notifyDataSetChanged();
+                binding.moviePosters.scrollToPosition(0);
 
                 setCheckedSortOrder(sortOrder);
 

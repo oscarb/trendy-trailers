@@ -3,6 +3,9 @@ package se.oscarb.trendytrailers.explore;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,9 +26,13 @@ import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.databinding.ActivityExploreBinding;
 import se.oscarb.trendytrailers.model.MovieListing;
 
-public class ExploreActivity extends AppCompatActivity {
+public class ExploreActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<MovieListing> {
+
+    private static final int TMDB_API_LOADER = 27;
+    private static final String QUERY_API_SORT_ORDER_EXTRA = "sortOrder";
 
     private ActivityExploreBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +47,36 @@ public class ExploreActivity extends AppCompatActivity {
         // Setup RecyclerView
         setupRecyclerView(binding.moviePosters);
 
-        loadMoviesFromApi();
+        // Initialize loader
+        getSupportLoaderManager().initLoader(TMDB_API_LOADER, null, this);
+
+
+        loadMovies();
+
+        //loadMoviesFromApi();
 
     }
+
+    private void loadMovies() {
+        loadMovies(TheMovieDbService.SortBy.POPULARITY);
+    }
+
+    private void loadMovies(String sortOrder) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_API_SORT_ORDER_EXTRA, sortOrder);
+
+        // Initialize or restart loader?
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<MovieListing> movieListingLoader = loaderManager.getLoader(TMDB_API_LOADER);
+
+        if (movieListingLoader == null) {
+            loaderManager.initLoader(TMDB_API_LOADER, bundle, this);
+        } else {
+            loaderManager.restartLoader(TMDB_API_LOADER, bundle, this);
+        }
+
+    }
+
 
     /**
      * Configure RecyclerView with adapter and layout
@@ -69,7 +105,6 @@ public class ExploreActivity extends AppCompatActivity {
         binding.progressBar.setVisibility(View.VISIBLE);
 
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
-
 
         Call<MovieListing> call;
         switch (sortOrder) {
@@ -121,6 +156,30 @@ public class ExploreActivity extends AppCompatActivity {
         });
     }
 
+    private MovieListing loadMoviesFromApiSynchronously(final String sortOrder) {
+        TheMovieDbService service = TheMovieDbServiceGenerator.getService();
+
+        Call<MovieListing> call;
+        switch (sortOrder) {
+            case TheMovieDbService.SortBy.POPULARITY:
+                call = service.getPopularMovies();
+                break;
+            case TheMovieDbService.SortBy.HIGHEST_RATED:
+                call = service.getTopRatedMovies();
+                break;
+            default:
+                call = service.getPopularMovies();
+                break;
+        }
+
+        try {
+            return call.execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -163,10 +222,75 @@ public class ExploreActivity extends AppCompatActivity {
                 if (sort == null) sort = TheMovieDbService.SortBy.HIGHEST_RATED;
                 // Actions for both sort options
                 if (item.isChecked()) return true;
-                loadMoviesFromApi(sort);
+                loadMovies(sort);
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<MovieListing> onCreateLoader(int id, final Bundle args) {
+        return new AsyncTaskLoader<MovieListing>(this) {
+
+            @Override
+            protected void onStartLoading() {
+                // No args, no query to perform
+                if (args == null) {
+                    return;
+                }
+
+                // Show progress
+                binding.progressBar.setVisibility(View.VISIBLE);
+
+                forceLoad();
+
+            }
+
+            @Override
+            public MovieListing loadInBackground() {
+                String sortOrder = args.getString(QUERY_API_SORT_ORDER_EXTRA);
+
+                if (sortOrder == null) {
+                    return null;
+                }
+
+                // Perform synchronous Retrofit call
+                MovieListing movieListing = loadMoviesFromApiSynchronously(sortOrder);
+
+                return movieListing;
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<MovieListing> loader, MovieListing movieListing) {
+        // Load finished, hide progress bar
+        binding.progressBar.setVisibility(View.GONE);
+
+        if (movieListing == null) {
+            Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
+        moviePostersAdapter.setMovieList(movieListing.getMovies());
+        moviePostersAdapter.notifyDataSetChanged();
+        binding.moviePosters.scrollToPosition(0);
+
+        // TODO: Check which sort order data was loaded with
+        // setCheckedSortOrder(loader.);
+
+        AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(1000);
+        anim.setRepeatCount(0);
+        binding.moviePosters.startAnimation(anim);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<MovieListing> loader) {
+
+
     }
 }

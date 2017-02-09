@@ -111,7 +111,7 @@ public class DatabaseTest {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues testValues = new ContentValues();
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID, 297761);
+        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID, 297760);
         testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ADULT, false);
         testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_OVERVIEW, "From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences.");
         testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE, "2016-08-03");
@@ -191,15 +191,15 @@ public class DatabaseTest {
         testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_PATH, "/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg");
 
         ContentValues testValues2 = new ContentValues();
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID, 297762);
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ADULT, false);
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_OVERVIEW, "From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences.");
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE, "2016-08-03");
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ORIGINAL_TITLE, "Suicide Squad");
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TITLE, "Suicide Squad");
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_VOTE_AVERAGE, 5.91);
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_BACKDROP_PATH, "/ndlQ2Cuc3cjTL7lTynw6I4boP4S.jpg");
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_PATH, "/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg");
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID, 297762);
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ADULT, false);
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_OVERVIEW, "From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences.");
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE, "2016-08-03");
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ORIGINAL_TITLE, "Suicide Squad");
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TITLE, "Suicide Squad");
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_VOTE_AVERAGE, 5.91);
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_BACKDROP_PATH, "/ndlQ2Cuc3cjTL7lTynw6I4boP4S.jpg");
+        testValues2.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_PATH, "/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg");
 
         /* Insert ContentValues into database and get first row ID back */
         long firstRowId = database.insert(
@@ -239,7 +239,7 @@ public class DatabaseTest {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues testValues = new ContentValues();
-        testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID, 297761);
+        //testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID, 297761);
         testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ADULT, false);
         testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_OVERVIEW, "From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences.");
         testValues.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE, "2016-08-03");

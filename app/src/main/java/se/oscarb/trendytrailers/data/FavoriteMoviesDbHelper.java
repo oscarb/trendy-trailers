@@ -10,10 +10,10 @@ import static se.oscarb.trendytrailers.data.FavoriteMoviesContract.FavoriteMovie
 public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "favorite-movies.db";
-    private static final int DATABSE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1;
 
     public FavoriteMoviesDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABSE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_FAVORITE_MOVIES_TABLE = "CREATE TABLE " +
                 FavoriteMoviesEntry.TABLE_NAME + "(" +
                 FavoriteMoviesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                FavoriteMoviesEntry.COLUMN_TMDB_ID + " INTEGER KEY UNIQUE, " +
+                FavoriteMoviesEntry.COLUMN_TMDB_ID + " INTEGER UNIQUE, " +
                 FavoriteMoviesEntry.COLUMN_ADULT + " BOOLEAN, " +
                 FavoriteMoviesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 FavoriteMoviesEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +

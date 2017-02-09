@@ -1,5 +1,7 @@
 package se.oscarb.trendytrailers.detail;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -10,6 +12,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import se.oscarb.trendytrailers.R;
+import se.oscarb.trendytrailers.data.FavoriteMoviesContract;
+import se.oscarb.trendytrailers.data.FavoriteMoviesDbHelper;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbService;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.databinding.ActivityDetailBinding;
@@ -19,6 +23,8 @@ import se.oscarb.trendytrailers.model.Movie;
 public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailBinding binding;
+
+    private SQLiteDatabase database;
 
 
     @Override
@@ -38,6 +44,10 @@ public class DetailActivity extends AppCompatActivity {
         searchApiForMovie(movieId);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Setup database connection
+        FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(this);
+        database = dbHelper.getWritableDatabase();
     }
 
     /**
@@ -74,6 +84,27 @@ public class DetailActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void addToFavorites(Movie movie) {
+        ContentValues values = new ContentValues();
+
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID, movie.getId());
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ADULT, movie.isAdultMovie());
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_OVERVIEW, movie.getOverview());
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ORIGINAL_TITLE, movie.getOriginalTitle());
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TITLE, movie.getTitle());
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_BACKDROP_PATH, movie.getBackdropPath());
+        values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+
+        database.insert(FavoriteMoviesContract.FavoriteMoviesEntry.TABLE_NAME, null, values);
+    }
+
+    private boolean removeFromFavorites(int movieId) {
+        return database.delete(FavoriteMoviesContract.FavoriteMoviesEntry.TABLE_NAME,
+                FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID + " = " + movieId, null) > 0;
     }
 
     /** Bind movie with the View-Model for showing it in the UI */

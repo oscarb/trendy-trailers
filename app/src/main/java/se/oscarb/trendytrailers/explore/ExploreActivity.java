@@ -1,5 +1,7 @@
 package se.oscarb.trendytrailers.explore;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,18 +14,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 
+import java.util.Collections;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import se.oscarb.trendytrailers.R;
+import se.oscarb.trendytrailers.data.FavoriteMoviesContract;
+import se.oscarb.trendytrailers.data.FavoriteMoviesDbHelper;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbService;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.databinding.ActivityExploreBinding;
+import se.oscarb.trendytrailers.model.Movie;
 import se.oscarb.trendytrailers.model.MovieListing;
 
 public class ExploreActivity extends AppCompatActivity {
 
     private ActivityExploreBinding binding;
+
+    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +49,10 @@ public class ExploreActivity extends AppCompatActivity {
         setupRecyclerView(binding.moviePosters);
 
         loadMoviesFromApi();
+
+        // Setup database connection
+        FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(this);
+        database = dbHelper.getWritableDatabase();
 
     }
 
@@ -119,6 +133,44 @@ public class ExploreActivity extends AppCompatActivity {
                 Snackbar.make(binding.getRoot(), R.string.error, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void displayFavoriteMovies() {
+        Cursor cursor = getFavoriteMoviesCursor();
+        List<Movie> movieList = Collections.emptyList();
+
+        do {
+            Movie movie = new Movie();
+
+            movie.setId(cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID)));
+            movie.setPosterPath(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_PATH)));
+            movie.setAdult(cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ADULT)));
+            movie.setOverview(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_OVERVIEW)));
+            movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE)));
+            movie.setOriginalTitle(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_ORIGINAL_TITLE)));
+            movie.setTitle(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TITLE)));
+            movie.setBackdropPath(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_BACKDROP_PATH)));
+            movie.setVoteAverage(cursor.getFloat(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_VOTE_AVERAGE)));
+
+            movieList.add(movie);
+
+        } while (cursor.moveToNext());
+
+        cursor.close();
+
+        // TODO: Show movielist
+    }
+
+    private Cursor getFavoriteMoviesCursor() {
+        return database.query(
+                FavoriteMoviesContract.FavoriteMoviesEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                FavoriteMoviesContract.FavoriteMoviesEntry._ID
+        );
     }
 
 

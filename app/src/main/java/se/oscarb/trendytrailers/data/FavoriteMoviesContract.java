@@ -8,6 +8,7 @@ public class FavoriteMoviesContract {
 
         public static final String TABLE_NAME = "favoriteMovies";
 
+        public static final String COLUMN_TMDB_ID = "tmdbId";
         public static final String COLUMN_POSTER_PATH = "posterPath";
         public static final String COLUMN_ADULT = "adult";
         public static final String COLUMN_OVERVIEW = "overview";

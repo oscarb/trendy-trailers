@@ -21,15 +21,16 @@ public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_FAVORITE_MOVIES_TABLE = "CREATE TABLE " +
                 FavoriteMoviesEntry.TABLE_NAME + "(" +
                 FavoriteMoviesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                FavoriteMoviesEntry.COLUMN_TMDB_ID + " INTEGER UNIQUE, " +
-                FavoriteMoviesEntry.COLUMN_ADULT + " BOOLEAN, " +
+                FavoriteMoviesEntry.COLUMN_TMDB_ID + " INTEGER NOT NULL, " +
+                FavoriteMoviesEntry.COLUMN_ADULT + " BOOLEAN NOT NULL, " +
                 FavoriteMoviesEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 FavoriteMoviesEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 FavoriteMoviesEntry.COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL, " +
                 FavoriteMoviesEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 FavoriteMoviesEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +
                 FavoriteMoviesEntry.COLUMN_BACKDROP_PATH + " TEXT, " +
-                FavoriteMoviesEntry.COLUMN_POSTER_PATH + " TEXT" +
+                FavoriteMoviesEntry.COLUMN_POSTER_PATH + " TEXT, " +
+                " UNIQUE (" + FavoriteMoviesEntry.COLUMN_TMDB_ID + ") ON CONFLICT REPLACE " +
                 ");";
 
 

@@ -136,10 +136,14 @@ public class ExploreActivity extends AppCompatActivity {
     }
 
     private void displayFavoriteMovies() {
+
+        // TODO: Load from ContentResolver
+        // TODO: Do it async!
+
         Cursor cursor = getFavoriteMoviesCursor();
         List<Movie> movieList = Collections.emptyList();
 
-        do {
+        while (cursor.moveToNext()) {
             Movie movie = new Movie();
 
             movie.setId(cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID)));
@@ -154,7 +158,7 @@ public class ExploreActivity extends AppCompatActivity {
 
             movieList.add(movie);
 
-        } while (cursor.moveToNext());
+        }
 
         cursor.close();
 

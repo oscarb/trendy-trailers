@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,8 @@ import se.oscarb.trendytrailers.model.Movie;
 import se.oscarb.trendytrailers.model.MovieListing;
 
 public class ExploreActivity extends AppCompatActivity {
+
+    private final String FILTER_FAVORITE_MOVIES = "favorites";
 
     private ActivityExploreBinding binding;
 
@@ -54,6 +57,13 @@ public class ExploreActivity extends AppCompatActivity {
         FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(this);
         database = dbHelper.getWritableDatabase();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // TODO: Requery for all movies to display!
     }
 
     /**
@@ -112,17 +122,9 @@ public class ExploreActivity extends AppCompatActivity {
 
                 MovieListing movieListing = response.body();
 
-                MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
-                moviePostersAdapter.setMovieList(movieListing.getMovies());
-                moviePostersAdapter.notifyDataSetChanged();
-                binding.moviePosters.scrollToPosition(0);
+                updateRecyclerView(movieListing.getMovies());
 
                 setCheckedSortOrder(sortOrder);
-
-                AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
-                anim.setDuration(1000);
-                anim.setRepeatCount(0);
-                binding.moviePosters.startAnimation(anim);
 
             }
 
@@ -135,6 +137,19 @@ public class ExploreActivity extends AppCompatActivity {
         });
     }
 
+    private void updateRecyclerView(List<Movie> movieList) {
+        MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
+        moviePostersAdapter.setMovieList(movieList);
+        moviePostersAdapter.notifyDataSetChanged();
+        binding.moviePosters.scrollToPosition(0);
+
+        AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(1000);
+        anim.setRepeatCount(0);
+        binding.moviePosters.startAnimation(anim);
+
+    }
+
     private void displayFavoriteMovies() {
 
         // TODO: Load from ContentResolver
@@ -142,6 +157,13 @@ public class ExploreActivity extends AppCompatActivity {
 
         Cursor cursor = getFavoriteMoviesCursor();
         List<Movie> movieList = Collections.emptyList();
+
+        setCheckedSortOrder(FILTER_FAVORITE_MOVIES);
+
+        if (cursor == null) {
+            updateRecyclerView(movieList);
+            return;
+        }
 
         while (cursor.moveToNext()) {
             Movie movie = new Movie();
@@ -161,20 +183,17 @@ public class ExploreActivity extends AppCompatActivity {
         }
 
         cursor.close();
-
-        // TODO: Show movielist
+        updateRecyclerView(movieList);
     }
 
     private Cursor getFavoriteMoviesCursor() {
-        return database.query(
-                FavoriteMoviesContract.FavoriteMoviesEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                FavoriteMoviesContract.FavoriteMoviesEntry._ID
-        );
+        try {
+            return getContentResolver().query(FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI, null, null, null, FavoriteMoviesContract.FavoriteMoviesEntry._ID);
+        } catch (Exception e) {
+            Log.e("trendytrailers", "Failed to load data");
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -191,10 +210,13 @@ public class ExploreActivity extends AppCompatActivity {
 
         switch (sortOrder) {
             case TheMovieDbService.SortBy.HIGHEST_RATED:
-                menuItemId = R.id.action_sort_vote_average_desc;
+                menuItemId = R.id.action_filter_highest_rated;
                 break;
             case TheMovieDbService.SortBy.POPULARITY:
-                menuItemId = R.id.action_sort_popularity_desc;
+                menuItemId = R.id.action_filter_most_popular;
+                break;
+            case FILTER_FAVORITE_MOVIES:
+                menuItemId = R.id.action_filter_favorite_movies;
                 break;
         }
         if (menuItemId != 0) {
@@ -213,9 +235,12 @@ public class ExploreActivity extends AppCompatActivity {
 
         // Since both sort options execute the same code, the break can be omitted for the first case
         switch (id) {
-            case R.id.action_sort_popularity_desc:
+            case R.id.action_filter_favorite_movies:
+                displayFavoriteMovies();
+                break;
+            case R.id.action_filter_most_popular:
                 sort = TheMovieDbService.SortBy.POPULARITY;
-            case R.id.action_sort_vote_average_desc:
+            case R.id.action_filter_highest_rated:
                 if (sort == null) sort = TheMovieDbService.SortBy.HIGHEST_RATED;
                 // Actions for both sort options
                 if (item.isChecked()) return true;

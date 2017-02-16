@@ -3,6 +3,7 @@ package se.oscarb.trendytrailers.detail;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -99,10 +100,24 @@ public class DetailActivity extends AppCompatActivity {
         values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_BACKDROP_PATH, movie.getBackdropPath());
         values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
 
-        database.insert(FavoriteMoviesContract.FavoriteMoviesEntry.TABLE_NAME, null, values);
+        Uri uri = getContentResolver().insert(FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI, values);
+
+        // TODO: Show with snackbar or icon that movie was added to favorites
+
     }
 
     private boolean removeFromFavorites(int movieId) {
+
+        // Uri for removing movie from favorites
+        Uri uri = FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(Integer.toString(movieId)).build();
+
+        // Remove using the content resolver
+        getContentResolver().delete(uri, null, null);
+
+        // TODO: Restart loader for requering movies in list of favorites?
+
+
         return database.delete(FavoriteMoviesContract.FavoriteMoviesEntry.TABLE_NAME,
                 FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID + " = " + movieId, null) > 0;
     }

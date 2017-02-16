@@ -1,10 +1,24 @@
 package se.oscarb.trendytrailers.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class FavoriteMoviesContract {
 
+    // Which Content Provider to access
+    public static final String AUTHORITY = "se.oscarb.trendytrailers";
+
+    // Build content URI
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+
+    // Possible paths for content provider
+    public static final String PATH_FAVORITE_MOVIES = "favorite-movies";
+
+
     public static final class FavoriteMoviesEntry implements BaseColumns {
+
+        // Content URI
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITE_MOVIES).build();
 
         public static final String TABLE_NAME = "favoriteMovies";
 

@@ -29,7 +29,6 @@ public class DetailViewModel implements ViewModel {
         Glide.with(imageView.getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
                 .into(imageView);
     }
 

@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import org.parceler.Parcels;
+
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.detail.DetailActivity;
 import se.oscarb.trendytrailers.model.Movie;
@@ -20,7 +22,8 @@ import se.oscarb.trendytrailers.model.ViewModel;
  */
 public class ItemPosterViewModel extends BaseObservable implements ViewModel {
 
-    public final static String EXTRA_MOVIE_TMDB_ID = "se.oscarb.trendytrailers.TMDB_ID";
+    public final static String EXTRA_MOVIE = "se.oscarb.trendytrailers.MOVIE";
+
 
     private Context context;
     private Movie movie;
@@ -51,7 +54,7 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
     /** Show detailed information about the movie when the poster image is clicked */
     public void onPosterClick(View view) {
         Intent intent = new Intent(view.getContext(), DetailActivity.class);
-        intent.putExtra(EXTRA_MOVIE_TMDB_ID, movie.getId());
+        intent.putExtra(EXTRA_MOVIE, Parcels.wrap(movie));
         view.getContext().startActivity(intent);
     }
 

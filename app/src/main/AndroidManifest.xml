@@ -30,6 +30,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="se.oscarb.trendytrailers.explore.ExploreActivity" />
         </activity>
+
+        <!-- Register ContentProvider -->
+        <provider
+            android:name="se.oscarb.trendytrailers.data.FavoriteMoviesContentProvider"
+            android:authorities="se.oscarb.trendytrailers"
+            android:exported="false" />
     </application>
 
 </manifest>

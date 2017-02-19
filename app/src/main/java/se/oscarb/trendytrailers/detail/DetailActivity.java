@@ -1,12 +1,14 @@
 package se.oscarb.trendytrailers.detail;
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import retrofit2.Call;
@@ -14,7 +16,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import se.oscarb.trendytrailers.R;
 import se.oscarb.trendytrailers.data.FavoriteMoviesContract;
-import se.oscarb.trendytrailers.data.FavoriteMoviesDbHelper;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbService;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.databinding.ActivityDetailBinding;
@@ -22,10 +23,10 @@ import se.oscarb.trendytrailers.explore.ItemPosterViewModel;
 import se.oscarb.trendytrailers.model.Movie;
 
 public class DetailActivity extends AppCompatActivity {
+    private static final String TAG = DetailActivity.class.getSimpleName();
 
     private ActivityDetailBinding binding;
-
-    private SQLiteDatabase database;
+    private Movie movie;
 
 
     @Override
@@ -46,9 +47,6 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Setup database connection
-        FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(this);
-        database = dbHelper.getWritableDatabase();
     }
 
     /**
@@ -87,7 +85,7 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    private void addToFavorites(Movie movie) {
+    private boolean addToFavorites(Movie movie) {
         ContentValues values = new ContentValues();
 
         values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID, movie.getId());
@@ -101,25 +99,15 @@ public class DetailActivity extends AppCompatActivity {
         values.put(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
 
         Uri uri = getContentResolver().insert(FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI, values);
-
-        // TODO: Show with snackbar or icon that movie was added to favorites
-
+        return uri != null;
     }
 
-    private boolean removeFromFavorites(int movieId) {
-
+    private boolean removeFromFavorites(Movie movie) {
         // Uri for removing movie from favorites
         Uri uri = FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(Integer.toString(movieId)).build();
+        uri = uri.buildUpon().appendPath(Integer.toString(movie.getId())).build();
 
-        // Remove using the content resolver
-        getContentResolver().delete(uri, null, null);
-
-        // TODO: Restart loader for requering movies in list of favorites?
-
-
-        return database.delete(FavoriteMoviesContract.FavoriteMoviesEntry.TABLE_NAME,
-                FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID + " = " + movieId, null) > 0;
+        return getContentResolver().delete(uri, null, null) > 0;
     }
 
     /** Bind movie with the View-Model for showing it in the UI */
@@ -127,6 +115,63 @@ public class DetailActivity extends AppCompatActivity {
 
         DetailViewModel detailViewModel = new DetailViewModel(movie);
         binding.setDetailViewModel(detailViewModel);
+
+        updateFavoriteIcon(isFavorite(movie));
     }
 
+    private boolean isFavorite(Movie movie) {
+        // Check with ContentProvider if movie is a favorite movie?
+        Uri uri = FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI;
+        String selection = FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_TMDB_ID + " = ?";
+        String[] selectionArgs = {Integer.toString(movie.getId())};
+        Cursor cursor = getContentResolver().query(uri, null, selection, selectionArgs, null);
+
+        return cursor != null && cursor.getCount() == 1;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_toggle_favorite:
+                Movie movie = binding.getDetailViewModel().getMovie();
+                String message;
+
+                if (isFavorite(movie)) {
+                    message = "Could not remove " + movie.getTitle() + " from favorites";
+                    if (removeFromFavorites(movie)) {
+                        message = "Removed " + movie.getTitle() + " from favorites";
+                    }
+                } else {
+                    addToFavorites(movie);
+                    message = "Added " + movie.getTitle() + " to favorites";
+                }
+                updateFavoriteIcon(isFavorite(movie));
+                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void updateFavoriteIcon(boolean isFavorite) {
+        MenuItem item = binding.toolbar.getMenu().findItem(R.id.action_toggle_favorite);
+
+        int icon = (isFavorite) ? R.drawable.ic_favorite_24dp : R.drawable.ic_favorite_border_24dp;
+        int title = (isFavorite) ? R.string.remove_from_favorites : R.string.add_to_favorites;
+
+        item.setIcon(icon);
+        item.setTitle(title);
+    }
 }

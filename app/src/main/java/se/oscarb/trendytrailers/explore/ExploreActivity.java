@@ -1,21 +1,19 @@
 package se.oscarb.trendytrailers.explore;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,7 +21,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import se.oscarb.trendytrailers.R;
 import se.oscarb.trendytrailers.data.FavoriteMoviesContract;
-import se.oscarb.trendytrailers.data.FavoriteMoviesDbHelper;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbService;
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.databinding.ActivityExploreBinding;
@@ -31,12 +28,12 @@ import se.oscarb.trendytrailers.model.Movie;
 import se.oscarb.trendytrailers.model.MovieListing;
 
 public class ExploreActivity extends AppCompatActivity {
-
+    private static final String TAG = ExploreActivity.class.getSimpleName();
     private final String FILTER_FAVORITE_MOVIES = "favorites";
 
     private ActivityExploreBinding binding;
 
-    private SQLiteDatabase database;
+    private int currentFilterAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,26 +41,22 @@ public class ExploreActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_explore);
 
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
 
         // Setup RecyclerView
         setupRecyclerView(binding.moviePosters);
 
         loadMoviesFromApi();
 
-        // Setup database connection
-        FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(this);
-        database = dbHelper.getWritableDatabase();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        // TODO: Requery for all movies to display!
+        // Reload favorites in case favorites has been changed
+        if (currentFilterAction == R.id.action_filter_favorite_movies) {
+            displayFavoriteMovies();
+        }
     }
 
     /**
@@ -94,7 +87,6 @@ public class ExploreActivity extends AppCompatActivity {
 
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
 
-
         Call<MovieListing> call;
         switch (sortOrder) {
             case TheMovieDbService.SortBy.POPULARITY:
@@ -121,11 +113,8 @@ public class ExploreActivity extends AppCompatActivity {
                 }
 
                 MovieListing movieListing = response.body();
-
                 updateRecyclerView(movieListing.getMovies());
-
                 setCheckedSortOrder(sortOrder);
-
             }
 
             /** Display message to user that data could not load */
@@ -151,12 +140,8 @@ public class ExploreActivity extends AppCompatActivity {
     }
 
     private void displayFavoriteMovies() {
-
-        // TODO: Load from ContentResolver
-        // TODO: Do it async!
-
         Cursor cursor = getFavoriteMoviesCursor();
-        List<Movie> movieList = Collections.emptyList();
+        List<Movie> movieList = new ArrayList<>();
 
         setCheckedSortOrder(FILTER_FAVORITE_MOVIES);
 
@@ -179,7 +164,6 @@ public class ExploreActivity extends AppCompatActivity {
             movie.setVoteAverage(cursor.getFloat(cursor.getColumnIndex(FavoriteMoviesContract.FavoriteMoviesEntry.COLUMN_VOTE_AVERAGE)));
 
             movieList.add(movie);
-
         }
 
         cursor.close();
@@ -190,7 +174,7 @@ public class ExploreActivity extends AppCompatActivity {
         try {
             return getContentResolver().query(FavoriteMoviesContract.FavoriteMoviesEntry.CONTENT_URI, null, null, null, FavoriteMoviesContract.FavoriteMoviesEntry._ID);
         } catch (Exception e) {
-            Log.e("trendytrailers", "Failed to load data");
+            Log.e(TAG, "Failed to load data");
             e.printStackTrace();
             return null;
         }
@@ -221,6 +205,7 @@ public class ExploreActivity extends AppCompatActivity {
         }
         if (menuItemId != 0) {
             binding.toolbar.getMenu().findItem(menuItemId).setChecked(true);
+            currentFilterAction = menuItemId;
         }
     }
 
@@ -230,6 +215,7 @@ public class ExploreActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        currentFilterAction = id;
 
         String sort = null;
 
@@ -247,6 +233,7 @@ public class ExploreActivity extends AppCompatActivity {
                 loadMoviesFromApi(sort);
                 break;
         }
+
 
         return super.onOptionsItemSelected(item);
     }

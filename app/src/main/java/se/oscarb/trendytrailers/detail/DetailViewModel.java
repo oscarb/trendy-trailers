@@ -53,6 +53,10 @@ public class DetailViewModel implements ViewModel {
         return movie.getOverview();
     }
 
+    public Movie getMovie() {
+        return movie;
+    }
+
     public void setMovie(Movie movie) {
         this.movie = movie;
     }

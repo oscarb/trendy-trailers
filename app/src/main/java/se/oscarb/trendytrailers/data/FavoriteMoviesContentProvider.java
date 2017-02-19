@@ -135,7 +135,7 @@ public class FavoriteMoviesContentProvider extends ContentProvider {
         int match = uriMatcher.match(uri);
 
         // Number of deleted favorite movies
-        int favoriteMoviesDeleted = 0;
+        int favoriteMoviesDeleted;
 
         // Remove movies from table of favorites
         switch (match) {

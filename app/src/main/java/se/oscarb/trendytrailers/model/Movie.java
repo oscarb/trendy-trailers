@@ -1,8 +1,11 @@
 package se.oscarb.trendytrailers.model;
 
+import org.parceler.Parcel;
+
 /**
  * A Movie with properties as defined by The Movie Database
  */
+@Parcel
 public class Movie {
     private String poster_path;
     private boolean adult;

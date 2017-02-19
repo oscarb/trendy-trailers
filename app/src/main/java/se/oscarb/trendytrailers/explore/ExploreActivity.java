@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +31,14 @@ import se.oscarb.trendytrailers.model.MovieListing;
 
 public class ExploreActivity extends AppCompatActivity {
     private static final String TAG = ExploreActivity.class.getSimpleName();
+    private static final String STATE_MOVIE_LIST = "movies";
+    private static final String STATE_CURRENT_FILTER = "filter";
+
     private final String FILTER_FAVORITE_MOVIES = "favorites";
 
     private ActivityExploreBinding binding;
 
-    private int currentFilterAction;
+    private String currentFilterAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +51,15 @@ public class ExploreActivity extends AppCompatActivity {
         // Setup RecyclerView
         setupRecyclerView(binding.moviePosters);
 
-        loadMoviesFromApi();
+        if (savedInstanceState != null) {
+            List<Movie> movies = Parcels.unwrap(savedInstanceState.getParcelable(STATE_MOVIE_LIST));
+            int filter = savedInstanceState.getInt(STATE_CURRENT_FILTER);
+            updateRecyclerView(movies);
+            currentFilterAction = savedInstanceState.getString(STATE_CURRENT_FILTER);
+        } else {
+            loadMoviesFromApi();
+        }
+
 
     }
 
@@ -54,7 +67,7 @@ public class ExploreActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Reload favorites in case favorites has been changed
-        if (currentFilterAction == R.id.action_filter_favorite_movies) {
+        if (currentFilterAction == FILTER_FAVORITE_MOVIES) {
             displayFavoriteMovies();
         }
     }
@@ -143,7 +156,7 @@ public class ExploreActivity extends AppCompatActivity {
         Cursor cursor = getFavoriteMoviesCursor();
         List<Movie> movieList = new ArrayList<>();
 
-        setCheckedSortOrder(FILTER_FAVORITE_MOVIES);
+        currentFilterAction = FILTER_FAVORITE_MOVIES;
 
         if (cursor == null) {
             updateRecyclerView(movieList);
@@ -185,12 +198,16 @@ public class ExploreActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_explore, menu);
+        setCheckedSortOrder(currentFilterAction);
+
         return true;
     }
 
     /** Update menu to reflect current sortOrder */
     private void setCheckedSortOrder(String sortOrder) {
         int menuItemId = 0;
+
+        if (sortOrder == null) return;
 
         switch (sortOrder) {
             case TheMovieDbService.SortBy.HIGHEST_RATED:
@@ -205,7 +222,7 @@ public class ExploreActivity extends AppCompatActivity {
         }
         if (menuItemId != 0) {
             binding.toolbar.getMenu().findItem(menuItemId).setChecked(true);
-            currentFilterAction = menuItemId;
+            currentFilterAction = sortOrder;
         }
     }
 
@@ -215,7 +232,6 @@ public class ExploreActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        currentFilterAction = id;
 
         String sort = null;
 
@@ -236,5 +252,13 @@ public class ExploreActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
+        outState.putParcelable(STATE_MOVIE_LIST, Parcels.wrap(moviePostersAdapter.getMovieList()));
+        outState.putString(STATE_CURRENT_FILTER, currentFilterAction);
     }
 }

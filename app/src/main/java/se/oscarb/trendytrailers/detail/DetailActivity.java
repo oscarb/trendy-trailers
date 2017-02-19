@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.parceler.Parcels;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,12 +40,11 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
 
         /** Get movie ID from ExploreActivity */
-        int movieId = getIntent().getIntExtra(ItemPosterViewModel.EXTRA_MOVIE_TMDB_ID, -1);
+        movie = Parcels.unwrap(getIntent().getParcelableExtra(ItemPosterViewModel.EXTRA_MOVIE));
+        if (movie == null) return;
 
-        if (movieId == -1) return;
-
-        setTitle(getString(R.string.loading_movie));
-        searchApiForMovie(movieId);
+        setTitle(movie.getTitle());
+        bindMovie(movie);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -115,8 +116,6 @@ public class DetailActivity extends AppCompatActivity {
 
         DetailViewModel detailViewModel = new DetailViewModel(movie);
         binding.setDetailViewModel(detailViewModel);
-
-        updateFavoriteIcon(isFavorite(movie));
     }
 
     private boolean isFavorite(Movie movie) {
@@ -133,6 +132,7 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detail, menu);
+        updateFavoriteIcon(isFavorite(movie));
         return true;
     }
 

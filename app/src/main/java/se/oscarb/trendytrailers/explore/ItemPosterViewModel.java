@@ -51,7 +51,9 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
         return movie.getTitle();
     }
 
-    /** Show detailed information about the movie when the poster image is clicked */
+    /**
+     * Show detailed information about the movie when the poster image is clicked
+     */
     public void onPosterClick(View view) {
         Intent intent = new Intent(view.getContext(), DetailActivity.class);
         intent.putExtra(EXTRA_MOVIE, Parcels.wrap(movie));

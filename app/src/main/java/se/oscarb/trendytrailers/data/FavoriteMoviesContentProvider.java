@@ -37,7 +37,7 @@ public class FavoriteMoviesContentProvider extends ContentProvider {
     }
 
     /**
-     * Initialize databse connection using the dbHelper
+     * Initialize database connection using the dbHelper
      */
     @Override
     public boolean onCreate() {

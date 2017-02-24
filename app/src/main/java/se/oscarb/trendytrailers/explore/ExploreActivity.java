@@ -53,7 +53,6 @@ public class ExploreActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             List<Movie> movies = Parcels.unwrap(savedInstanceState.getParcelable(STATE_MOVIE_LIST));
-            int filter = savedInstanceState.getInt(STATE_CURRENT_FILTER);
             updateRecyclerView(movies);
             currentFilterAction = savedInstanceState.getString(STATE_CURRENT_FILTER);
         } else {
@@ -67,7 +66,7 @@ public class ExploreActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Reload favorites in case favorites has been changed
-        if (currentFilterAction == FILTER_FAVORITE_MOVIES) {
+        if (currentFilterAction != null && currentFilterAction.equals(FILTER_FAVORITE_MOVIES)) {
             displayFavoriteMovies();
         }
     }
@@ -203,7 +202,9 @@ public class ExploreActivity extends AppCompatActivity {
         return true;
     }
 
-    /** Update menu to reflect current sortOrder */
+    /**
+     * Update menu to reflect current sortOrder
+     */
     private void setCheckedSortOrder(String sortOrder) {
         int menuItemId = 0;
 

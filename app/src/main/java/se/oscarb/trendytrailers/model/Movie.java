@@ -2,7 +2,6 @@ package se.oscarb.trendytrailers.model;
 
 import org.parceler.Parcel;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,6 +19,7 @@ public class Movie {
     private String backdrop_path;
     private float vote_average;
     private ReviewListing reviews;
+    private VideoListing videos;
 
     // Getters
 
@@ -60,12 +60,12 @@ public class Movie {
     }
 
     public List<Review> getReviews() {
-        if (reviews == null) {
-            return Collections.emptyList();
-        }
         return reviews.getReviews();
     }
 
+    public List<Video> getTrailers() {
+        return videos.getResults();
+    }
     // Setters
 
     public String getReleaseDate() {

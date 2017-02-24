@@ -21,7 +21,7 @@ public class TheMovieDbServiceGenerator {
 
     /**
      * Add API_KEY to all requests
-     *
+     * <p>
      * See https://futurestud.io/tutorials/retrofit-2-how-to-add-query-parameters-to-every-request
      */
     private static final OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(new Interceptor() {

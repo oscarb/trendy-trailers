@@ -7,11 +7,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import org.parceler.Parcels;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,9 +27,12 @@ import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.databinding.ActivityDetailBinding;
 import se.oscarb.trendytrailers.explore.ItemPosterViewModel;
 import se.oscarb.trendytrailers.model.Movie;
+import se.oscarb.trendytrailers.model.Review;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = DetailActivity.class.getSimpleName();
+    private static final String STATE_REVIEW_LIST = "reviews";
+
 
     private ActivityDetailBinding binding;
     private Movie movie;
@@ -48,42 +55,81 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setupReviewsRecyclerView(binding.movieReviews);
+
+        if (savedInstanceState != null) {
+            List<Review> reviews = Parcels.unwrap(savedInstanceState.getParcelable(STATE_REVIEW_LIST));
+            updateReviewsRecyclerView(reviews);
+        } else {
+            searchApiForMovieDetails(movie);
+        }
+
     }
+
+    private void setupReviewsRecyclerView(RecyclerView recyclerView) {
+        recyclerView.setHasFixedSize(true);
+
+        RecyclerView.Adapter adapter = new ReviewsAdapter();
+        recyclerView.setAdapter(adapter);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ReviewsAdapter reviewsAdapter = (ReviewsAdapter) binding.movieReviews.getAdapter();
+        outState.putParcelable(STATE_REVIEW_LIST, Parcels.wrap(reviewsAdapter.getReviews()));
+
+    }
+
 
     /**
      * Initiate a search for movie with id movieId to the TMDb API
      */
-    private void searchApiForMovie(int movieId) {
+    private void searchApiForMovieDetails(Movie movie) {
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
-        Call<Movie> call = service.getMovie(movieId);
+        Call<Movie> call = service.getMovieWithVideosAndReviews(movie.getId());
 
         call.enqueue(new Callback<Movie>() {
             /** Show detailed information for the movie when request is successful */
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
-                binding.progressBar.setVisibility(View.GONE);
-
                 if (!response.isSuccessful()) {
                     Snackbar.make(binding.getRoot(), "Error", Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
                 Movie movie = response.body();
-                setTitle(movie.getTitle());
-
-                bindMovie(movie);
+                displayReviews(movie);
             }
 
             /** Show information to the user that data failed to load */
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);
-                setTitle(R.string.app_name);
                 Snackbar.make(binding.getRoot(), R.string.error, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
 
+    private void displayReviews(Movie movie) {
+        updateReviewsRecyclerView(movie.getReviews());
+    }
 
+    private void updateReviewsRecyclerView(List<Review> reviews) {
+        if (reviews.isEmpty()) {
+            binding.reviewHeader.setText(R.string.no_reviews);
+            return;
+        }
+
+        binding.reviewHeader.setText(R.string.reviews);
+
+        ReviewsAdapter reviewsAdapter = (ReviewsAdapter) binding.movieReviews.getAdapter();
+        reviewsAdapter.setReviews(reviews);
+        reviewsAdapter.notifyDataSetChanged();
+        binding.movieReviews.scrollToPosition(0);
     }
 
     private boolean addToFavorites(Movie movie) {

@@ -32,6 +32,10 @@ public interface TheMovieDbService {
     @GET("movie/{movie_id}")
     Call<Movie> getMovie(@Path("movie_id") int movieId);
 
+    @GET("movie/{movie_id}?append_to_response=videos,reviews")
+    Call<Movie> getMovieWithVideosAndReviews(@Path("movie_id") int movieId);
+
+
     /* Magic Constants */
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({

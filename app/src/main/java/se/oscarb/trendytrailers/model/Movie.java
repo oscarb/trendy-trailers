@@ -2,6 +2,9 @@ package se.oscarb.trendytrailers.model;
 
 import org.parceler.Parcel;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A Movie with properties as defined by The Movie Database
  */
@@ -16,6 +19,7 @@ public class Movie {
     private String title;
     private String backdrop_path;
     private float vote_average;
+    private ReviewListing reviews;
 
     // Getters
 
@@ -53,6 +57,13 @@ public class Movie {
 
     public void setPosterPath(String posterPath) {
         this.poster_path = posterPath;
+    }
+
+    public List<Review> getReviews() {
+        if (reviews == null) {
+            return Collections.emptyList();
+        }
+        return reviews.getReviews();
     }
 
     // Setters

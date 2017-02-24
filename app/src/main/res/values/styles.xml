@@ -17,4 +17,23 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="author">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8sp</item>
+        <item name="android:layout_marginBottom">32sp</item>
+        <item name="android:lineSpacingMultiplier">1.4</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textAlignment">textEnd</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="reviewContent">
+        <item name="android:lineSpacingMultiplier">1.4</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
 </resources>

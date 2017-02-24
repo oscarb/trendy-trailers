@@ -60,6 +60,7 @@ public class DetailViewModel implements ViewModel {
         this.movie = movie;
     }
 
+
     @Override
     public void destroy() {
         // Empty for now

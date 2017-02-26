@@ -3,6 +3,7 @@ package se.oscarb.trendytrailers.explore;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 
 import org.parceler.Parcels;
 
@@ -33,12 +33,15 @@ public class ExploreActivity extends AppCompatActivity {
     private static final String TAG = ExploreActivity.class.getSimpleName();
     private static final String STATE_MOVIE_LIST = "movies";
     private static final String STATE_CURRENT_FILTER = "filter";
+    private static final String STATE_LAYOUT = "layout";
+
 
     private final String FILTER_FAVORITE_MOVIES = "favorites";
 
     private ActivityExploreBinding binding;
 
     private String currentFilterAction;
+    private Parcelable layoutState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,10 @@ public class ExploreActivity extends AppCompatActivity {
             List<Movie> movies = Parcels.unwrap(savedInstanceState.getParcelable(STATE_MOVIE_LIST));
             updateRecyclerView(movies);
             currentFilterAction = savedInstanceState.getString(STATE_CURRENT_FILTER);
+
+            layoutState = savedInstanceState.getParcelable(STATE_LAYOUT);
+
+
         } else {
             loadMoviesFromApi();
         }
@@ -69,6 +76,11 @@ public class ExploreActivity extends AppCompatActivity {
         if (currentFilterAction != null && currentFilterAction.equals(FILTER_FAVORITE_MOVIES)) {
             displayFavoriteMovies();
         }
+
+        if (layoutState != null) {
+            binding.moviePosters.getLayoutManager().onRestoreInstanceState(layoutState);
+        }
+
     }
 
     /**
@@ -142,13 +154,14 @@ public class ExploreActivity extends AppCompatActivity {
         MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
         moviePostersAdapter.setMovieList(movieList);
         moviePostersAdapter.notifyDataSetChanged();
-        binding.moviePosters.scrollToPosition(0);
+        //binding.moviePosters.scrollToPosition(0);
 
+        /*
         AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
         anim.setDuration(1000);
         anim.setRepeatCount(0);
         binding.moviePosters.startAnimation(anim);
-
+        */
     }
 
     private void displayFavoriteMovies() {
@@ -259,7 +272,10 @@ public class ExploreActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
+        Parcelable layoutState = binding.moviePosters.getLayoutManager().onSaveInstanceState();
+
         outState.putParcelable(STATE_MOVIE_LIST, Parcels.wrap(moviePostersAdapter.getMovieList()));
         outState.putString(STATE_CURRENT_FILTER, currentFilterAction);
+        outState.putParcelable(STATE_LAYOUT, layoutState);
     }
 }

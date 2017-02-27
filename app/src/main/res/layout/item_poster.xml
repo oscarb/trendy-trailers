@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -14,14 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/poster"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster"
             android:onClick="@{posterViewModel.onPosterClick}"
-            app:imageUrl="@{posterViewModel.imageUrl}" />
+            app:imageUrl="@{posterViewModel.imageUrl}"
+            fresco:viewAspectRatio="0.6666666666666667" />
     </FrameLayout>
 
 </layout>

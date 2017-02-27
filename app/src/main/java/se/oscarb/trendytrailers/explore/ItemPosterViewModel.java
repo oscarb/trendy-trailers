@@ -4,11 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
+import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.parceler.Parcels;
 
@@ -35,12 +34,21 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
 
     // Change image
     @BindingAdapter("imageUrl")
-    public static void setImageUrl(ImageView imageView, String url) {
+    public static void setImageUrl(SimpleDraweeView imageView, String url) {
+        imageView.setImageURI(Uri.parse(url));
+
+        /*
+        Picasso.with(imageView.getContext())
+                .load(url)
+                .into(imageView);
+                */
+        /*
         Glide.with(imageView.getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .into(imageView);
+        */
     }
 
     public String getImageUrl() {

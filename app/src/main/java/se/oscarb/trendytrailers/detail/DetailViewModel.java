@@ -1,10 +1,9 @@
 package se.oscarb.trendytrailers.detail;
 
 import android.databinding.BindingAdapter;
-import android.widget.ImageView;
+import android.net.Uri;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import se.oscarb.trendytrailers.data.remote.TheMovieDbServiceGenerator;
 import se.oscarb.trendytrailers.model.Movie;
@@ -25,11 +24,15 @@ public class DetailViewModel implements ViewModel {
     }
 
     @BindingAdapter("imageUrl")
-    public static void setImageUrl(ImageView imageView, String url) {
+    public static void setImageUrl(SimpleDraweeView imageView, String url) {
+        imageView.setImageURI(Uri.parse(url));
+
+/*
         Glide.with(imageView.getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView);
+                */
     }
 
     public String getTitle() {

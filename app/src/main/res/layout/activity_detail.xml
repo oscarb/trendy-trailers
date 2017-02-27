@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -44,13 +45,15 @@
                 android:orientation="vertical">
 
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/movie_poster"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/movie_poster_height"
                     android:layout_margin="16dp"
+                    android:adjustViewBounds="true"
                     android:contentDescription="@string/movie_poster"
                     app:imageUrl="@{detailViewModel.posterUrl}"
+                    fresco:viewAspectRatio="0.6666666666666667"
                     tools:background="@color/colorAccent"
                     tools:layout_height="200dp" />
 
@@ -110,7 +113,8 @@
                     android:id="@+id/movie_reviews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp" />
+                    android:layout_margin="16dp"
+                    android:nestedScrollingEnabled="false" />
 
 
             </LinearLayout>

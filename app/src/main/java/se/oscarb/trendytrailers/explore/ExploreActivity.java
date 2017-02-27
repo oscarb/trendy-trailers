@@ -3,7 +3,6 @@ package se.oscarb.trendytrailers.explore;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,7 +40,6 @@ public class ExploreActivity extends AppCompatActivity {
     private ActivityExploreBinding binding;
 
     private String currentFilterAction;
-    private Parcelable layoutState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +53,17 @@ public class ExploreActivity extends AppCompatActivity {
         setupRecyclerView(binding.moviePosters);
 
         if (savedInstanceState != null) {
-            List<Movie> movies = Parcels.unwrap(savedInstanceState.getParcelable(STATE_MOVIE_LIST));
-            updateRecyclerView(movies);
             currentFilterAction = savedInstanceState.getString(STATE_CURRENT_FILTER);
-
-            layoutState = savedInstanceState.getParcelable(STATE_LAYOUT);
-
-
         } else {
             loadMoviesFromApi();
         }
 
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
 
     }
 
@@ -75,10 +73,6 @@ public class ExploreActivity extends AppCompatActivity {
         // Reload favorites in case favorites has been changed
         if (currentFilterAction != null && currentFilterAction.equals(FILTER_FAVORITE_MOVIES)) {
             displayFavoriteMovies();
-        }
-
-        if (layoutState != null) {
-            binding.moviePosters.getLayoutManager().onRestoreInstanceState(layoutState);
         }
 
     }
@@ -94,6 +88,17 @@ public class ExploreActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void setupRecyclerView(RecyclerView recyclerView, List<Movie> movies) {
+        recyclerView.setHasFixedSize(true);
+
+        RecyclerView.Adapter adapter = new MoviePostersAdapter(movies);
+        recyclerView.setAdapter(adapter);
+
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(layoutManager);
+
     }
 
     /**
@@ -139,6 +144,9 @@ public class ExploreActivity extends AppCompatActivity {
                 MovieListing movieListing = response.body();
                 updateRecyclerView(movieListing.getMovies());
                 setCheckedSortOrder(sortOrder);
+
+                binding.moviePosters.scrollToPosition(0);
+
             }
 
             /** Display message to user that data could not load */
@@ -193,6 +201,9 @@ public class ExploreActivity extends AppCompatActivity {
 
         cursor.close();
         updateRecyclerView(movieList);
+        binding.moviePosters.scrollToPosition(0);
+        setCheckedSortOrder(FILTER_FAVORITE_MOVIES);
+
     }
 
     private Cursor getFavoriteMoviesCursor() {
@@ -234,7 +245,7 @@ public class ExploreActivity extends AppCompatActivity {
                 menuItemId = R.id.action_filter_favorite_movies;
                 break;
         }
-        if (menuItemId != 0) {
+        if (menuItemId != 0 && binding.toolbar.getMenu().findItem(menuItemId) != null) {
             binding.toolbar.getMenu().findItem(menuItemId).setChecked(true);
             currentFilterAction = sortOrder;
         }
@@ -248,6 +259,11 @@ public class ExploreActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         String sort = null;
+
+        if (id == R.id.action_debug) {
+            binding.moviePosters.scrollToPosition(10);
+            return true;
+        }
 
         // Since both sort options execute the same code, the break can be omitted for the first case
         switch (id) {
@@ -272,10 +288,19 @@ public class ExploreActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
-        Parcelable layoutState = binding.moviePosters.getLayoutManager().onSaveInstanceState();
 
         outState.putParcelable(STATE_MOVIE_LIST, Parcels.wrap(moviePostersAdapter.getMovieList()));
         outState.putString(STATE_CURRENT_FILTER, currentFilterAction);
-        outState.putParcelable(STATE_LAYOUT, layoutState);
+        outState.putParcelable("layout", binding.moviePosters.getLayoutManager().onSaveInstanceState());
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        List<Movie> movies = Parcels.unwrap(savedInstanceState.getParcelable(STATE_MOVIE_LIST));
+        updateRecyclerView(movies);
+        binding.moviePosters.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable("layout"));
+
     }
 }

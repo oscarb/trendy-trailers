@@ -36,19 +36,6 @@ public class ItemPosterViewModel extends BaseObservable implements ViewModel {
     @BindingAdapter("imageUrl")
     public static void setImageUrl(SimpleDraweeView imageView, String url) {
         imageView.setImageURI(Uri.parse(url));
-
-        /*
-        Picasso.with(imageView.getContext())
-                .load(url)
-                .into(imageView);
-                */
-        /*
-        Glide.with(imageView.getContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
-                .into(imageView);
-        */
     }
 
     public String getImageUrl() {

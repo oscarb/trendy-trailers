@@ -3,10 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="se.oscarb.trendytrailers.explore.ExploreActivity">
     <item
-        android:id="@+id/action_debug"
-        android:title="debug"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter_list_black_24dp"
         android:title="@string/filter_by"

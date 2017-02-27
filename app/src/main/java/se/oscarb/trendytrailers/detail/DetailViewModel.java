@@ -26,13 +26,6 @@ public class DetailViewModel implements ViewModel {
     @BindingAdapter("imageUrl")
     public static void setImageUrl(SimpleDraweeView imageView, String url) {
         imageView.setImageURI(Uri.parse(url));
-
-/*
-        Glide.with(imageView.getContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
-                */
     }
 
     public String getTitle() {

@@ -107,4 +107,14 @@ public class Movie {
     public void setAdult(int adult) {
         this.adult = adult > 0;
     }
+
+    // Other methods
+
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof Movie)) return false;
+        Movie otherMovie = (Movie) other;
+        return this.getId() == otherMovie.getId();
+    }
 }

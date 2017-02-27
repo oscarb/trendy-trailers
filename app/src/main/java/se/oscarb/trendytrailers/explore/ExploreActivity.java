@@ -32,8 +32,6 @@ public class ExploreActivity extends AppCompatActivity {
     private static final String TAG = ExploreActivity.class.getSimpleName();
     private static final String STATE_MOVIE_LIST = "movies";
     private static final String STATE_CURRENT_FILTER = "filter";
-    private static final String STATE_LAYOUT = "layout";
-
 
     private final String FILTER_FAVORITE_MOVIES = "favorites";
 
@@ -57,14 +55,6 @@ public class ExploreActivity extends AppCompatActivity {
         } else {
             loadMoviesFromApi();
         }
-
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
     }
 
     @Override
@@ -74,7 +64,6 @@ public class ExploreActivity extends AppCompatActivity {
         if (currentFilterAction != null && currentFilterAction.equals(FILTER_FAVORITE_MOVIES)) {
             displayFavoriteMovies();
         }
-
     }
 
     /**
@@ -88,17 +77,6 @@ public class ExploreActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-    }
-
-    private void setupRecyclerView(RecyclerView recyclerView, List<Movie> movies) {
-        recyclerView.setHasFixedSize(true);
-
-        RecyclerView.Adapter adapter = new MoviePostersAdapter(movies);
-        recyclerView.setAdapter(adapter);
-
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(layoutManager);
-
     }
 
     /**
@@ -160,16 +138,9 @@ public class ExploreActivity extends AppCompatActivity {
 
     private void updateRecyclerView(List<Movie> movieList) {
         MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
+        if (moviePostersAdapter.getMovieList().equals(movieList)) return;
         moviePostersAdapter.setMovieList(movieList);
         moviePostersAdapter.notifyDataSetChanged();
-        //binding.moviePosters.scrollToPosition(0);
-
-        /*
-        AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
-        anim.setDuration(1000);
-        anim.setRepeatCount(0);
-        binding.moviePosters.startAnimation(anim);
-        */
     }
 
     private void displayFavoriteMovies() {
@@ -201,7 +172,6 @@ public class ExploreActivity extends AppCompatActivity {
 
         cursor.close();
         updateRecyclerView(movieList);
-        binding.moviePosters.scrollToPosition(0);
         setCheckedSortOrder(FILTER_FAVORITE_MOVIES);
 
     }
@@ -260,15 +230,11 @@ public class ExploreActivity extends AppCompatActivity {
 
         String sort = null;
 
-        if (id == R.id.action_debug) {
-            binding.moviePosters.scrollToPosition(10);
-            return true;
-        }
-
         // Since both sort options execute the same code, the break can be omitted for the first case
         switch (id) {
             case R.id.action_filter_favorite_movies:
                 displayFavoriteMovies();
+                binding.moviePosters.scrollToPosition(0);
                 break;
             case R.id.action_filter_most_popular:
                 sort = TheMovieDbService.SortBy.POPULARITY;
@@ -279,7 +245,6 @@ public class ExploreActivity extends AppCompatActivity {
                 loadMoviesFromApi(sort);
                 break;
         }
-
 
         return super.onOptionsItemSelected(item);
     }

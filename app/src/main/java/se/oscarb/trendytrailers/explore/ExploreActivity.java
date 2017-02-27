@@ -256,7 +256,6 @@ public class ExploreActivity extends AppCompatActivity {
 
         outState.putParcelable(STATE_MOVIE_LIST, Parcels.wrap(moviePostersAdapter.getMovieList()));
         outState.putString(STATE_CURRENT_FILTER, currentFilterAction);
-        outState.putParcelable("layout", binding.moviePosters.getLayoutManager().onSaveInstanceState());
 
     }
 
@@ -265,7 +264,6 @@ public class ExploreActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         List<Movie> movies = Parcels.unwrap(savedInstanceState.getParcelable(STATE_MOVIE_LIST));
         updateRecyclerView(movies);
-        binding.moviePosters.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable("layout"));
 
     }
 }

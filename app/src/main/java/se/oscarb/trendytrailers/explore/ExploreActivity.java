@@ -36,6 +36,7 @@ public class ExploreActivity extends AppCompatActivity {
     private final String FILTER_FAVORITE_MOVIES = "favorites";
 
     private ActivityExploreBinding binding;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     private String currentFilterAction;
 
@@ -77,6 +78,16 @@ public class ExploreActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (!currentFilterAction.equals(FILTER_FAVORITE_MOVIES))
+                    loadMoviesFromApi(currentFilterAction, page);
+            }
+        };
+
+        recyclerView.addOnScrollListener(scrollListener);
     }
 
     /**
@@ -86,24 +97,29 @@ public class ExploreActivity extends AppCompatActivity {
         loadMoviesFromApi(TheMovieDbService.SortBy.POPULARITY);
     }
 
+    private void loadMoviesFromApi(final String sortOrder) {
+        loadMoviesFromApi(sortOrder, 1);
+    }
+
     /**
      * Get and show movie posters from the API sorted by sortOrder
      */
-    private void loadMoviesFromApi(final String sortOrder) {
+    private void loadMoviesFromApi(final String sortOrder, int page) {
         binding.progressBar.setVisibility(View.VISIBLE);
 
         TheMovieDbService service = TheMovieDbServiceGenerator.getService();
 
         Call<MovieListing> call;
+
         switch (sortOrder) {
             case TheMovieDbService.SortBy.POPULARITY:
-                call = service.getPopularMovies();
+                call = service.getPopularMovies(page);
                 break;
             case TheMovieDbService.SortBy.HIGHEST_RATED:
-                call = service.getTopRatedMovies();
+                call = service.getTopRatedMovies(page);
                 break;
             default:
-                call = service.getPopularMovies();
+                call = service.getPopularMovies(page);
                 break;
         }
 
@@ -120,11 +136,13 @@ public class ExploreActivity extends AppCompatActivity {
                 }
 
                 MovieListing movieListing = response.body();
-                updateRecyclerView(movieListing.getMovies());
-                setCheckedSortOrder(sortOrder);
+                boolean isDataAdded = (movieListing.getPage() > 1);
+                updateRecyclerView(movieListing.getMovies(), isDataAdded);
 
-                binding.moviePosters.scrollToPosition(0);
-
+                if (!isDataAdded) {
+                    setCheckedSortOrder(sortOrder);
+                    binding.moviePosters.scrollToPosition(0);
+                }
             }
 
             /** Display message to user that data could not load */
@@ -136,11 +154,18 @@ public class ExploreActivity extends AppCompatActivity {
         });
     }
 
-    private void updateRecyclerView(List<Movie> movieList) {
+    private void updateRecyclerView(List<Movie> movieList, boolean dataIsAdded) {
         MoviePostersAdapter moviePostersAdapter = (MoviePostersAdapter) binding.moviePosters.getAdapter();
         if (moviePostersAdapter.getMovieList().equals(movieList)) return;
-        moviePostersAdapter.setMovieList(movieList);
-        moviePostersAdapter.notifyDataSetChanged();
+        if (dataIsAdded) {
+            int positionStart = moviePostersAdapter.getItemCount();
+            moviePostersAdapter.addMovies(movieList);
+            moviePostersAdapter.notifyItemRangeInserted(positionStart, movieList.size());
+        } else {
+            moviePostersAdapter.setMovieList(movieList);
+            moviePostersAdapter.notifyDataSetChanged();
+            scrollListener.resetState();
+        }
     }
 
     private void displayFavoriteMovies() {
@@ -150,7 +175,7 @@ public class ExploreActivity extends AppCompatActivity {
         currentFilterAction = FILTER_FAVORITE_MOVIES;
 
         if (cursor == null) {
-            updateRecyclerView(movieList);
+            updateRecyclerView(movieList, false);
             return;
         }
 
@@ -171,7 +196,7 @@ public class ExploreActivity extends AppCompatActivity {
         }
 
         cursor.close();
-        updateRecyclerView(movieList);
+        updateRecyclerView(movieList, false);
         setCheckedSortOrder(FILTER_FAVORITE_MOVIES);
 
     }
@@ -263,7 +288,7 @@ public class ExploreActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         List<Movie> movies = Parcels.unwrap(savedInstanceState.getParcelable(STATE_MOVIE_LIST));
-        updateRecyclerView(movies);
+        updateRecyclerView(movies, false);
 
     }
 }

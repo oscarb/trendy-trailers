@@ -32,6 +32,10 @@ public class MoviePostersAdapter extends RecyclerView.Adapter<MoviePostersAdapte
         this.movieList = movieList;
     }
 
+    public void addMovies(List<Movie> movies) {
+        movieList.addAll(movies);
+    }
+
     @Override
     public MoviePostersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemPosterBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_poster, parent, false);

@@ -17,4 +17,12 @@ public class MovieListing {
     public List<Movie> getMovies() {
         return results;
     }
+
+    public int getPage() {
+        return page;
+    }
+
+    public int getTotalPages() {
+        return total_pages;
+    }
 }

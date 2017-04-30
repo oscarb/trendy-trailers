@@ -114,8 +114,8 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
                 Movie movie = response.body();
-                displayReviews(movie);
                 displayTrailerButton(movie);
+                displayReviews(movie);
 
             }
 
@@ -131,7 +131,6 @@ public class DetailActivity extends AppCompatActivity {
     private void addFloatingActionButton(final Uri uri) {
         // Add the Floating Action Button
         FloatingActionButton fab = binding.fab;
-        fab.setVisibility(View.VISIBLE);
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +139,7 @@ public class DetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        fab.show();
     }
 
     /**

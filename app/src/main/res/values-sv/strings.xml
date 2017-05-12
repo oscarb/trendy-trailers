@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Trendy Trailers</string>
+    <string name="action_settings">Inställningar</string>
+    <string name="add_to_favorites">Lägg till i favoriter</string>
+    <string name="error">Error</string>
+    <string name="favorite_movies">Favoriter</string>
+    <string name="filter_by">Filtrera efter</string>
+    <string name="highest_rated">Bästa betyg</string>
+    <string name="loading_movie">Laddar film…</string>
+    <string name="lorem_ipsum">När Arthurs far mördas, griper hans farbror Vortigern kronan. Efter att Arthur berövats på sitt arv vet han själv inte om sin egen bakgrund och lever därför ett tufft liv i stadens gränder. När han en dag drar svärdet ur stenen, vänds hans liv upp och ner och han tvingas möta sanningen kring sitt riktiga arv, även om han gillar det eller inte.</string>
+    <string name="most_popular">Mest populära</string>
+    <string name="movie_poster">Filmaffisch</string>
+    <string name="no_reviews">Inga recensioner</string>
+    <string name="remove_from_favorites">Ta bort från favoriter</string>
+    <string name="reviews">Recensioner</string>
+    <string name="searching_for_reviews">Söker efter recensioner…</string>
+</resources>

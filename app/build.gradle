@@ -21,8 +21,8 @@ android {
         applicationId "se.oscarb.trendytrailers"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 5
-        versionName "0.4"
+        versionCode 6
+        versionName "0.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "TMDB_API_KEY", "\"${properties.getProperty("apiKey")}\""
